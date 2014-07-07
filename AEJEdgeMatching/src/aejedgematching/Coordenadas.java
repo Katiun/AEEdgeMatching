@@ -35,6 +35,14 @@ public class Coordenadas {
     public void setColumna(int columna) {
         this.columna = columna;
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Coordenadas)){
+            return false;
+        }
+        return fila == ((Coordenadas)obj).fila && ((Coordenadas)obj).columna == columna;
+    }
+
     
 }

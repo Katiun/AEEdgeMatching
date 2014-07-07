@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -532,6 +533,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                     ficha[] esquinas = new ficha[4];
                     ficha[] bordes = new ficha[(Parametros.DIMENSION_TABLERO - 2) * 4];
                     ficha[][] interior = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+                    ArrayList<ficha> fichas = new ArrayList<>();
                     
                     while ((l = br.readLine()) != null){
                         System.out.println(l);
