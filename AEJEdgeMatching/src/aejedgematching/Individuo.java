@@ -12,39 +12,39 @@ package aejedgematching;
  */
 public class Individuo {
     
-    private ficha[] esquinas;
-    private ficha[] bordes;
-    private ficha[][] interior;
+    private Ficha[] esquinas;
+    private Ficha[] bordes;
+    private Ficha[][] interior;
     private int fitness;
 
-    public Individuo(ficha[] esquinas, ficha[] bordes, ficha[][] interior) {
+    public Individuo(Ficha[] esquinas, Ficha[] bordes, Ficha[][] interior) {
         this.esquinas = esquinas;
         this.bordes = bordes;
         this.interior = interior;
         this.fitness = -1;
     }
 
-    public ficha[] getEsquinas() {
+    public Ficha[] getEsquinas() {
         return esquinas;
     }
 
-    public void setEsquinas(ficha[] esquinas) {
+    public void setEsquinas(Ficha[] esquinas) {
         this.esquinas = esquinas;
     }
 
-    public ficha[] getBordes() {
+    public Ficha[] getBordes() {
         return bordes;
     }
 
-    public void setBordes(ficha[] bordes) {
+    public void setBordes(Ficha[] bordes) {
         this.bordes = bordes;
     }
 
-    public ficha[][] getInterior() {
+    public Ficha[][] getInterior() {
         return interior;
     }
 
-    public void setInterior(ficha[][] interior) {
+    public void setInterior(Ficha[][] interior) {
         this.interior = interior;
     }
     
@@ -53,7 +53,7 @@ public class Individuo {
             int indiceEsquinas = 0;
             int indiceBordes = 0;
             fitness = 0;
-            ficha[][] rep = new ficha[Parametros.DIMENSION_TABLERO][Parametros.DIMENSION_TABLERO];
+            Ficha[][] rep = new Ficha[Parametros.DIMENSION_TABLERO][Parametros.DIMENSION_TABLERO];
             
             //armo el puzzle como quedaria
             for (int fila = 0; fila < Parametros.DIMENSION_TABLERO; fila++){

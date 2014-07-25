@@ -21,7 +21,7 @@ public class AE {
         
         int corteEsquina = (int)(Math.random() * 3);
         corteEsquina = 1;
-        int corteBorde = (int)(Math.random() * ((Parametros.DIMENSION_TABLERO - 2) * 4) - 1);
+        int corteBorde = (int)(Math.random() * ((Parametros.DIMENSION_TABLERO - 2) * 4 - 1));
         corteBorde = 2;
         int fila = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2));
         int columna = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2));

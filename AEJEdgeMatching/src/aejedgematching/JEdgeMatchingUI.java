@@ -65,6 +65,8 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
     JButton btnCambiar;
     JButton btnMezclar;
 
+    private Individuo individuoOriginal;
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -136,7 +138,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         
-                        ficha[][] tablero = pnlPuzzle.getTablero();
+                        Ficha[][] tablero = pnlPuzzle.getTablero();
                         boolean cargarTablero = true;
                         
                         switch (e.getActionCommand()){
@@ -253,7 +255,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                 
                 c.fill = GridBagConstraints.HORIZONTAL;
                 
-                ficha[][] tablero = generarPuzle();
+                Ficha[][] tablero = generarPuzle();
                 pnlPuzzle = new JPanelEdge(Parametros.DIMENSION_TABLERO, tablero);
                 pnlPuzzle.validate();
                 pnlPuzzle.repaint();
@@ -281,7 +283,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
     }
 
     public void cambiarConfiguracion(){
-        ficha[][] tablero = generarPuzle();
+        Ficha[][] tablero = generarPuzle();
         pnlVisualizacion.remove(pnlPuzzle);
         pnlPuzzle = null;
         pnlPuzzle = new JPanelEdge(Parametros.DIMENSION_TABLERO, tablero);
@@ -290,10 +292,10 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
         pnlVisualizacion.repaint();
     }
     
-    private static ficha[][] iniciarPuzle(){
+    private static Ficha[][] iniciarPuzle(){
         
         int nroPieza = 1;
-        ficha[][] tablero = new ficha[Parametros.DIMENSION_TABLERO][Parametros.DIMENSION_TABLERO];
+        Ficha[][] tablero = new Ficha[Parametros.DIMENSION_TABLERO][Parametros.DIMENSION_TABLERO];
 
         for (int fila = 0; fila < Parametros.DIMENSION_TABLERO; fila++){
             for (int columna = 0; columna < Parametros.DIMENSION_TABLERO; columna++){
@@ -302,7 +304,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                     colores[patron] = 0;
                 }
                 
-                ficha nuevaFicha = new ficha(nroPieza, colores);
+                Ficha nuevaFicha = new Ficha(nroPieza, colores);
                 tablero[fila][columna] = nuevaFicha;
                 nroPieza++;
             }
@@ -311,17 +313,17 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
         return tablero;
     }
     
-    private ficha[][] generarPuzle(){
+    private Ficha[][] generarPuzle(){
         
         int nroPieza = 1;
-        ficha[][] tablero = new ficha[Parametros.DIMENSION_TABLERO][Parametros.DIMENSION_TABLERO];
+        Ficha[][] tablero = new Ficha[Parametros.DIMENSION_TABLERO][Parametros.DIMENSION_TABLERO];
         
         int indiceEsquinas = 0;
         int indiceBordes = 0;
         int filaInterior = 0, columnaInteriro = 0;
-        ficha[] esquinas = new ficha[4];
-        ficha[] bordes = new ficha[(Parametros.DIMENSION_TABLERO - 2) * 4];
-        ficha[][] interior = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[] esquinas = new Ficha[4];
+        Ficha[] bordes = new Ficha[(Parametros.DIMENSION_TABLERO - 2) * 4];
+        Ficha[][] interior = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
         
         
         for (int fila = 0; fila < Parametros.DIMENSION_TABLERO; fila++){
@@ -353,7 +355,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
 //                    colores[3] = 10;
 //                }
                 
-                ficha nuevaFicha = new ficha(nroPieza, colores);
+                Ficha nuevaFicha = new Ficha(nroPieza, colores);
                 tablero[fila][columna] = nuevaFicha;
                 nroPieza++;
                 
@@ -426,7 +428,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
         return tablero;
     }
     
-    private ficha[][] rotarFichasPuzle(ficha[][] tablero){
+    private Ficha[][] rotarFichasPuzle(Ficha[][] tablero){
         
         int rotacion;
         
@@ -440,10 +442,10 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
         
     }
 
-    private ficha[][] cambiarFichasPuzle(ficha[][] tablero){
+    private Ficha[][] cambiarFichasPuzle(Ficha[][] tablero){
         
         int filaSeleccionada, columnaSeleccionada, probabilidadCambio;
-        ficha fichaSeleccionada;
+        Ficha fichaSeleccionada;
         
         for (int fila = 0; fila < Parametros.DIMENSION_TABLERO; fila++){
             for (int columna = 0; columna < Parametros.DIMENSION_TABLERO; columna++){
@@ -474,7 +476,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
         return pnlPuzzle.getHeight();
     }
     
-    private void guardarArchivo(ficha[][] tablero){
+    private void guardarArchivo(Ficha[][] tablero){
 
         FileOutputStream fos = null;
         PrintStream ps = null;
@@ -528,30 +530,57 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                     BufferedReader br = new BufferedReader(new FileReader(f));
                     String l;
                     int nroFicha = 1;
-                    int fila = 0;
-                    int columna = 0;
-                    ficha[] esquinas = new ficha[4];
-                    ficha[] bordes = new ficha[(Parametros.DIMENSION_TABLERO - 2) * 4];
-                    ficha[][] interior = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-                    ArrayList<ficha> fichas = new ArrayList<>();
+                    ArrayList<Ficha> fichas = new ArrayList<>();
                     
                     while ((l = br.readLine()) != null){
-                        System.out.println(l);
                         String[] col = l.split(" ");
                         int[] colores = new int[Parametros.CANT_COLOR_FICHA];
                         for (int patron = 0; patron < Parametros.CANT_COLOR_FICHA; patron++){
                             colores[patron] = Integer.parseInt(col[patron]);
                         }
-                        ficha fichaN = new ficha(nroFicha, colores);
-                        
+                        Ficha fichaN = new Ficha(nroFicha, colores);
+                        nroFicha++;
+                        fichas.add(fichaN);
                     }
                     br.close();
+                    
+                    Parametros.DIMENSION_TABLERO = (int)Math.sqrt(nroFicha - 1);
+
+                    Ficha[] esquinas = new Ficha[4];
+                    Ficha[] bordes = new Ficha[(Parametros.DIMENSION_TABLERO - 2) * 4];
+                    Ficha[][] interior = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+                    int fila = 0;
+                    int columna = 0;
+                    int indiceEsq = 0;
+                    int indiceBorde = 0;
+                    
+                    for(Ficha fichaLeida : fichas){
+                        if (fichaLeida.isEsquina()){
+                            esquinas[indiceEsq] = fichaLeida;
+                            indiceEsq++;
+                        }else if (fichaLeida.isBorde()){
+                            bordes[indiceBorde] = fichaLeida;
+                            indiceBorde++;
+                        }else{
+                            if (columna >= Parametros.DIMENSION_TABLERO - 2){
+                                fila++;
+                                columna = 0;
+                            }
+                            interior[fila][columna] = fichaLeida;
+                            columna++;
+                        }
+                    }
+                    
+                    individuoOriginal = new Individuo(esquinas, bordes, interior);
+                    
                     break;
                 default:
                     JOptionPane.showMessageDialog(this, "No se seleccionó ningún archivo", "Cargar archivo", JOptionPane.WARNING_MESSAGE);
                     break;
             }
-        }catch(Exception ex){}
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

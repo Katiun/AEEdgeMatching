@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class JPanelEdge extends javax.swing.JPanel {
 
     private int DIMENSION;
-    static ficha[][] tablero;
+    static Ficha[][] tablero;
     private ArrayList<TriangleShape> triangleShapes;
     static final int SEPARACION_FICHA = 2;
 
@@ -34,7 +34,7 @@ public class JPanelEdge extends javax.swing.JPanel {
      * @param dimension
      * @param tablero
      */
-    public JPanelEdge(int dimension, ficha[][] tablero) {
+    public JPanelEdge(int dimension, Ficha[][] tablero) {
         initComponents();
 
         this.setBackground(Color.BLACK);
@@ -60,7 +60,7 @@ public class JPanelEdge extends javax.swing.JPanel {
                     JPanelEdge.tablero[fila][columna].rotarFicha(1);
                 }else if ((coordenada_fila >= 0 && coordenada_fila < DIMENSION) && (coordenada_columna >= 0 && coordenada_columna < DIMENSION) &&
                         (fila >= 0 && fila < DIMENSION) && (columna >= 0 && columna < DIMENSION)){
-                    ficha fichaAux = JPanelEdge.tablero[coordenada_fila][coordenada_columna];
+                    Ficha fichaAux = JPanelEdge.tablero[coordenada_fila][coordenada_columna];
                     JPanelEdge.tablero[coordenada_fila][coordenada_columna] = JPanelEdge.tablero[fila][columna];
                     JPanelEdge.tablero[fila][columna] = fichaAux;
                 }
@@ -102,11 +102,11 @@ public class JPanelEdge extends javax.swing.JPanel {
         g2d.dispose();
     }
     
-    public void setTablero(ficha[][] tablero){
+    public void setTablero(Ficha[][] tablero){
         this.tablero = tablero;
     }
     
-    public ficha[][] getTablero(){
+    public Ficha[][] getTablero(){
         return this.tablero;
     }
     

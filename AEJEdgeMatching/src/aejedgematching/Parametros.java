@@ -12,11 +12,11 @@ package aejedgematching;
  */
 public class Parametros {
     
-    public static int MAX_COLOR = 23;
-    public static int DIMENSION_TABLERO = 16;
+//    public static int MAX_COLOR = 23;
+//    public static int DIMENSION_TABLERO = 16;
     //PARA TESTEO
-//    public static int MAX_COLOR = 6;
-//    public static int DIMENSION_TABLERO = 4;
+    public static int MAX_COLOR = 10;
+    public static int DIMENSION_TABLERO = 4;
     public static int CANT_COLOR_FICHA = 4;
     public static int TAMANIO_FICHA = 39;
     
