@@ -6,7 +6,7 @@
 
 import aejedgematching.AE;
 import aejedgematching.Individuo;
-import aejedgematching.ficha;
+import aejedgematching.Ficha;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -47,40 +47,40 @@ public class JUAE {
     
     @Test
     public void test1(){
-        ficha[] esquinas1 = new ficha[] {new ficha(10, new int[] {0,1,1,0}), 
-            new ficha(2, new int[] {0,0,1,2}),
-            new ficha(12, new int[] {4,3,0,0}), 
-            new ficha(7, new int[] {1,0,0,6})
+        Ficha[] esquinas1 = new Ficha[] {new Ficha(10, new int[] {0,1,1,0}), 
+            new Ficha(2, new int[] {0,0,1,2}),
+            new Ficha(12, new int[] {4,3,0,0}), 
+            new Ficha(7, new int[] {1,0,0,6})
         };
-        ficha[] bordes1 = new ficha[] {new ficha(3, 2, new int[] {0,2,3,4}), 
-            new ficha(5, 3, new int[] {0,2,5,5}),
-            new ficha(6, 1, new int[] {3,4,1,0}),
-            new ficha(8, 2, new int[] {6,0,1,6}),
-            new ficha(13, 1, new int[] {1,2,5,0}),
-            new ficha(14, 3, new int[] {2,0,1,2}),
-            new ficha(15, 3, new int[] {6,1,0,5}),
-            new ficha(16, 3, new int[] {3,1,0,5})
+        Ficha[] bordes1 = new Ficha[] {new Ficha(3, 2, new int[] {0,2,3,4}), 
+            new Ficha(5, 3, new int[] {0,2,5,5}),
+            new Ficha(6, 1, new int[] {3,4,1,0}),
+            new Ficha(8, 2, new int[] {6,0,1,6}),
+            new Ficha(13, 1, new int[] {1,2,5,0}),
+            new Ficha(14, 3, new int[] {2,0,1,2}),
+            new Ficha(15, 3, new int[] {6,1,0,5}),
+            new Ficha(16, 3, new int[] {3,1,0,5})
         };
-        ficha[][] interior1 = new ficha[14][14];
+        Ficha[][] interior1 = new Ficha[14][14];
         Individuo i1 = new Individuo(esquinas1, bordes1, interior1);
 
-        ficha[] esquinas2 = new ficha[] {new ficha(2, new int[] {0,1,2,0}), 
-            new ficha(7, new int[] {0,0,6,1}),
-            new ficha(10, new int[] {1,1,0,0}), 
-            new ficha(12, new int[] {3,0,0,4})};
+        Ficha[] esquinas2 = new Ficha[] {new Ficha(2, new int[] {0,1,2,0}), 
+            new Ficha(7, new int[] {0,0,6,1}),
+            new Ficha(10, new int[] {1,1,0,0}), 
+            new Ficha(12, new int[] {3,0,0,4})};
         for (int i = 0; i < 4; i++){
             esquinas2[i].setRotacion(3);
         }
-        ficha[] bordes2 = new ficha[] {new ficha(14, 2, new int[] {0,1,2,2}),
-            new ficha(3, 2, new int[] {0,2,3,4}), 
-            new ficha(6, 1, new int[] {3,4,1,0}),
-            new ficha(13, 3, new int[] {5,0,1,2}),
-            new ficha(5, 2, new int[] {2,5,5,0}),
-            new ficha(16, 2, new int[] {1,0,5,3}),
-            new ficha(15, 3, new int[] {6,1,0,5}),
-            new ficha(8, 3, new int[] {6,6,0,1})
+        Ficha[] bordes2 = new Ficha[] {new Ficha(14, 2, new int[] {0,1,2,2}),
+            new Ficha(3, 2, new int[] {0,2,3,4}), 
+            new Ficha(6, 1, new int[] {3,4,1,0}),
+            new Ficha(13, 3, new int[] {5,0,1,2}),
+            new Ficha(5, 2, new int[] {2,5,5,0}),
+            new Ficha(16, 2, new int[] {1,0,5,3}),
+            new Ficha(15, 3, new int[] {6,1,0,5}),
+            new Ficha(8, 3, new int[] {6,6,0,1})
         };
-        ficha[][] interior2 = new ficha[14][14];
+        Ficha[][] interior2 = new Ficha[14][14];
         Individuo i2 = new Individuo(esquinas2, bordes2, interior2);
         
         AE ae = new AE();
