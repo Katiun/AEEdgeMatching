@@ -28,10 +28,10 @@ public class AE {
         int largoFila = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2 - fila));
         int largoColumna = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2 - columna));
         
-        ArrayList<ficha[]> nuevasEsquinas = corteSPX(4, corteEsquina, padre1.getEsquinas(), padre2.getEsquinas());
+        ArrayList<Ficha[]> nuevasEsquinas = corteSPX(4, corteEsquina, padre1.getEsquinas(), padre2.getEsquinas());
         ajustarEsquinas(nuevasEsquinas.get(0), nuevasEsquinas.get(1));
 
-        ArrayList<ficha[]> nuevosBordes = corteSPX((Parametros.DIMENSION_TABLERO - 2) * 4, corteBorde, padre1.getBordes(), padre2.getBordes());
+        ArrayList<Ficha[]> nuevosBordes = corteSPX((Parametros.DIMENSION_TABLERO - 2) * 4, corteBorde, padre1.getBordes(), padre2.getBordes());
         ajustarBordes(nuevosBordes.get(0), nuevosBordes.get(1));
         
         System.out.println("corte esquina: " + corteEsquina);
@@ -52,11 +52,11 @@ public class AE {
      * @param fichasPadre2 Gen segundo padre
      * @return 
      */
-    private ArrayList<ficha[]> corteSPX(int largo, int corte, ficha[] fichasPadre1, ficha[] fichasPadre2){
+    private ArrayList<Ficha[]> corteSPX(int largo, int corte, Ficha[] fichasPadre1, Ficha[] fichasPadre2){
         
-        ArrayList<ficha[]> esquinas = new ArrayList<>();
-        ficha[] esquinasHijo1 = new ficha[largo];
-        ficha[] esquinasHijo2 = new ficha[largo];
+        ArrayList<Ficha[]> esquinas = new ArrayList<>();
+        Ficha[] esquinasHijo1 = new Ficha[largo];
+        Ficha[] esquinasHijo2 = new Ficha[largo];
         HashMap<Integer, Integer> map10 = new HashMap<>();
         HashMap<Integer, Integer> map11 = new HashMap<>();
         HashMap<Integer, Integer> map20 = new HashMap<>();
@@ -113,7 +113,7 @@ public class AE {
      * @param esquinasHijo1 Esquinas del primer hijo
      * @param esquinasHijo2 Esquinas del segundo hijo
      */
-    private void ajustarEsquinas(ficha[] esquinasHijo1, ficha[] esquinasHijo2){
+    private void ajustarEsquinas(Ficha[] esquinasHijo1, Ficha[] esquinasHijo2){
         
         int indicePatron1 = 0, indicePatron2 = 0;
         
@@ -151,7 +151,7 @@ public class AE {
      * @param bordesHijo1 Bordes del primer hijo
      * @param bordesHijo2 Bordes del segundo hijo
      */
-    private void ajustarBordes(ficha[] bordesHijo1, ficha[] bordesHijo2){
+    private void ajustarBordes(Ficha[] bordesHijo1, Ficha[] bordesHijo2){
         
         for (int indice = 0; indice < Parametros.DIMENSION_TABLERO - 2; indice++){
             while (bordesHijo1[indice].getColores()[0] != 0){
@@ -188,20 +188,20 @@ public class AE {
         
     }
  
-    private ArrayList<ficha[][]> corteRegion(int filaCorte, int columnaCorte, 
+    private ArrayList<Ficha[][]> corteRegion(int filaCorte, int columnaCorte, 
             int largoCorteFila, int largoCorteColumna, 
-            ficha[][] interiorPadre1, ficha[][] interiorPadre2){
+            Ficha[][] interiorPadre1, Ficha[][] interiorPadre2){
         
-        ArrayList<ficha[][]> interiores = new ArrayList<>();
+        ArrayList<Ficha[][]> interiores = new ArrayList<>();
         
-        ficha[][] hijo1Padre1 = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        ficha[][] hijo2Padre1 = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        ficha[][] hijo3Padre1 = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        ficha[][] hijo4Padre1 = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        ficha[][] hijo1Padre2 = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        ficha[][] hijo2Padre2 = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        ficha[][] hijo3Padre2 = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        ficha[][] hijo4Padre2 = new ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo1Padre1 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo2Padre1 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo3Padre1 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo4Padre1 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo1Padre2 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo2Padre2 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo3Padre2 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo4Padre2 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
         
         int filaRot1 = filaCorte + largoCorteFila;
         int columnaRot1 = columnaCorte + largoCorteColumna;
