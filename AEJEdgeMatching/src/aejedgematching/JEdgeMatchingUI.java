@@ -21,7 +21,9 @@ import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -51,6 +53,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
     private final String ACTION_COMMAND_MEZCLAR = "ACTION_COMMAND_MEZCLAR";
     private final String ACTION_COMMAND_GUARDAR = "ACTION_COMMAND_GUARDAR";
     private final String ACTION_COMMAND_CARGAR = "ACTION_COMMAND_CARGAR";
+    private final String ACTION_COMMAND_ALGORITMO_EVOLUTIVO = "ACTION_COMMAND_ALGORITMO_EVOLUTIVO";
 
     JLabel lblDim;
     JTextField txtDim;
@@ -66,6 +69,8 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
     JButton btnMezclar;
 
     private Individuo individuoOriginal;
+    private List<Poblacion> poblaciones;
+    private boolean archivoCargado;
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -181,6 +186,14 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                             case ACTION_COMMAND_CARGAR:
                                 cargarArchivo();
                                 break;
+                                
+                            case ACTION_COMMAND_ALGORITMO_EVOLUTIVO:
+                                if (!archivoCargado){
+                                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún archivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                                    return;
+                                }
+                                ejecutarAlgoritmoEvolutivo();
+                                break;
                         }
                         if (cargarTablero){
                             pnlPuzzle.setTablero(tablero);
@@ -246,6 +259,15 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                 itCargar.setActionCommand(ACTION_COMMAND_CARGAR);
                 menuArchivo.add(itCargar);
 
+                //MENU ALGORITMOS
+                JMenu menuAlgoritmo = new JMenu("Algoritmos");
+                menu.add(menuAlgoritmo);
+                
+                JMenuItem itAlgoritmoEvolutivo = new JMenuItem("Algoritmo Evolutivo");
+                itAlgoritmoEvolutivo.addActionListener(actionListener);
+                itAlgoritmoEvolutivo.setActionCommand(ACTION_COMMAND_ALGORITMO_EVOLUTIVO);
+                menuAlgoritmo.add(itAlgoritmoEvolutivo);
+                
                 c.fill = GridBagConstraints.HORIZONTAL;
                 c.gridy = 0;
                 c.gridx = 0;
@@ -272,10 +294,13 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                 setLocationRelativeTo(null);
                 setExtendedState(JFrame.MAXIMIZED_BOTH);
                 setVisible(true);
+                
+                archivoCargado = false;
             }
         });
     }
-/**
+
+    /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -572,6 +597,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                     }
                     
                     individuoOriginal = new Individuo(esquinas, bordes, interior);
+                    archivoCargado = true;
                     
                     break;
                 default:
@@ -582,6 +608,253 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
             System.out.println(ex.getMessage());
         }
     }
+    
+    /**
+     * A partir del individuo original se crea una población aleatoria
+     */
+    private void crearPoblacionInicial(){
+        
+        List<Individuo> poblacionInicial = new ArrayList<>();
+        poblacionInicial.add(individuoOriginal);
+        
+        int cantidadEsquinas = 4;
+        int cantidadBordes = (Parametros.DIMENSION_TABLERO - 2) * 4;
+        int cantidadInterior = (Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2);
+        
+        for(int indiceIndividuo = 1; indiceIndividuo < Parametros.TOTAL_POBLACION; indiceIndividuo++){
+            
+            Ficha[] esquinas = new Ficha[cantidadEsquinas];
+            Ficha[] bordes = new Ficha[cantidadBordes];
+            Ficha[][] interior = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+
+            System.arraycopy(individuoOriginal.getEsquinas(), 0, esquinas, 0, cantidadEsquinas);
+            System.arraycopy(individuoOriginal.getBordes(), 0, bordes, 0, cantidadBordes);
+            for (int indiceFila = 0; indiceFila < Parametros.DIMENSION_TABLERO - 2; indiceFila++){
+                for (int indiceColumna = 0; indiceColumna < Parametros.DIMENSION_TABLERO - 2; indiceColumna++){
+                    interior[indiceFila][indiceColumna] = individuoOriginal.getInterior()[indiceFila][indiceColumna].clone();
+                }
+            }
+            
+            //Se mezcla para crear un nuevo individuo
+            for (int indiceEsquina = 0; indiceEsquina < cantidadEsquinas; indiceEsquina++){
+                int indiceDesde = (int)(Math.random() * cantidadEsquinas);
+                int indiceHasta = (int)(Math.random() * cantidadEsquinas);
+                Ficha fichaCambio = esquinas[indiceDesde];
+                esquinas[indiceDesde] = esquinas[indiceHasta];
+                esquinas[indiceHasta] = fichaCambio;
+            }
+            for (int indiceBorde = 0; indiceBorde < cantidadBordes; indiceBorde++){
+                int indiceDesde = (int)(Math.random() * cantidadBordes);
+                int indiceHasta = (int)(Math.random() * cantidadBordes);
+                Ficha fichaCambio = bordes[indiceDesde];
+                bordes[indiceDesde] = bordes[indiceHasta];
+                bordes[indiceHasta] = fichaCambio;
+            }
+            for (int indiceInterior = 0; indiceInterior < cantidadInterior; indiceInterior++){
+                int indiceDesde = (int)(Math.random() * cantidadInterior);
+                int indiceHasta = (int)(Math.random() * cantidadInterior);
+                Coordenadas coordDesde = obtenerCoordenadaFicha(indiceDesde);
+                Coordenadas coordHasta = obtenerCoordenadaFicha(indiceHasta);
+                int rotacion1 = (int)(Math.random() * 4);
+                int rotacion2 = (int)(Math.random() * 4);
+                Ficha fichaCambio = interior[coordDesde.getFila()][coordDesde.getColumna()];
+                fichaCambio.rotarFicha(rotacion1);
+                interior[coordDesde.getFila()][coordDesde.getColumna()] = interior[coordHasta.getFila()][coordHasta.getColumna()];
+                interior[coordDesde.getFila()][coordDesde.getColumna()].rotarFicha(rotacion2);
+                interior[coordHasta.getFila()][coordHasta.getColumna()] = fichaCambio;
+            }
+            
+            ajustarEsquinas(esquinas);
+            ajustarBordes(bordes);
+            
+            Individuo individuo = new Individuo(esquinas, bordes, interior);
+            poblacionInicial.add(individuo);
+        }
+        
+        Collections.sort(poblacionInicial, Individuo.getComparator());
+
+        poblaciones = new ArrayList<>();
+        poblaciones.add(new Poblacion(poblacionInicial));
+    }
+    
+    /**
+     * Ajusta las esquinas para dejar los grises hacia afuera
+     * @param esquinasHijo1 Esquinas del primer hijo
+     * @param esquinasHijo2 Esquinas del segundo hijo
+     */
+    private void ajustarEsquinas(Ficha[] esquinasHijo1){
+        
+        int indicePatron1 = 0, indicePatron2 = 0;
+        
+        for (int indice = 0; indice < 4; indice++){
+            switch (indice){
+                case 0:
+                    indicePatron1 = 0;
+                    indicePatron2 = 3;
+                    break;
+                case 1:
+                    indicePatron1 = 1;
+                    indicePatron2 = 0;
+                    break;
+                case 2:
+                    indicePatron1 = 3;
+                    indicePatron2 = 2;
+                    break;
+                case 3:
+                    indicePatron1 = 2;
+                    indicePatron2 = 1;
+                    break;
+            }
+            
+            while ((esquinasHijo1[indice].getColores()[indicePatron1] != 0) || (esquinasHijo1[indice].getColores()[indicePatron2] != 0)){
+                esquinasHijo1[indice].rotarFicha(1);
+            }
+        }
+    }
+    
+    /**
+     * Ajusta los bordes para dejar los grises hacia afuera
+     * @param bordesHijo1 Bordes del primer hijo
+     * @param bordesHijo2 Bordes del segundo hijo
+     */
+    private void ajustarBordes(Ficha[] bordesHijo1){
+        
+        for (int indice = 0; indice < Parametros.DIMENSION_TABLERO - 2; indice++){
+            while (bordesHijo1[indice].getColores()[0] != 0){
+                bordesHijo1[indice].rotarFicha(1);
+            }
+        }
+        
+        int patron = 3;
+        for (int indice = Parametros.DIMENSION_TABLERO - 2; indice < (Parametros.DIMENSION_TABLERO - 2) * 3; indice++){
+            while (bordesHijo1[indice].getColores()[patron] != 0){
+                bordesHijo1[indice].rotarFicha(1);
+            }
+            if (patron == 1){
+                patron = 3;
+            }else{
+                patron = 1;
+            }
+        }
+        
+        for (int indice = (Parametros.DIMENSION_TABLERO - 2) * 3; indice < (Parametros.DIMENSION_TABLERO - 2) * 4; indice++){
+            while (bordesHijo1[indice].getColores()[2] != 0){
+                bordesHijo1[indice].rotarFicha(1);
+            }
+        }
+        
+    }
+ 
+    private Coordenadas obtenerCoordenadaFicha(int ficha){
+        int fila, columna;
+        fila = ficha / (Parametros.DIMENSION_TABLERO - 2);
+        columna = ficha % (Parametros.DIMENSION_TABLERO - 2);
+        return new Coordenadas(fila, columna);
+    }
+    
+    private void ejecutarAlgoritmoEvolutivo(){
+
+        
+        int generacion = 1;
+        int mejorFitness, fitnessPromedio;
+        int mejorFitnessActual = 0;
+        int fitenssOptimo = ((Parametros.DIMENSION_TABLERO - 1) * (Parametros.DIMENSION_TABLERO - 1) + 1) * 2 + ((Parametros.DIMENSION_TABLERO - 2) * 2);
+        AE algoritmoEvolutivo = new AE();
+        LogEventos log = new LogEventos();
+
+        log.agregarEvento(new Evento(new Date(), "Inicio Algoritmo Evolutivo"));
+        
+        crearPoblacionInicial();
+
+        log.agregarEvento(new Evento(new Date(), "Población inicial creada"));
+        
+        while (generacion < Parametros.CANT_GENERACIONES){
+            
+            Poblacion ultimaPoblacion = poblaciones.get(poblaciones.size() - 1);
+            List<Individuo> individuos = new ArrayList<>();
+            for (Individuo individuo : ultimaPoblacion.getPoblacion()){
+                individuos.add(individuo.clone());
+            }
+
+            List<Individuo> nuevosIndividuos = new ArrayList<>();
+            
+            while (!individuos.isEmpty()){
+//                //Seleccion de padres de forma aleatoria
+//                int indiceIndividuo = (int)(Math.random() * individuos.size());
+//                Individuo padre1 = individuos.remove(indiceIndividuo);
+//                indiceIndividuo = (int)(Math.random() * individuos.size());
+//                Individuo padre2 = individuos.remove(indiceIndividuo);
+                
+//                //Seleccion de padres de forma de compensar los fitness
+//                Individuo padre1 = individuos.remove(0);
+//                Individuo padre2 = individuos.remove(individuos.size() - 1);
+                
+                //Seleccion de padres de forma elitista
+                Individuo padre1 = individuos.remove(0);
+                Individuo padre2 = individuos.remove(0);
+
+                //Cruzamiento
+                if (Math.random() < Parametros.PROBABILIDAD_CRUZAMIENTO){
+                    ArrayList<Individuo> hijos = algoritmoEvolutivo.cruzamiento(padre1, padre2);
+                    nuevosIndividuos.addAll(hijos);
+                }
+            }
+
+            //Ordeno los nuevos Individuos según su valor de fitness
+            Collections.sort(nuevosIndividuos, Individuo.getComparator());
+            
+            //Si la cantidad de individuos generados es distinta a la poblacion total
+            if (nuevosIndividuos.size() > Parametros.TOTAL_POBLACION){
+                //Si hay más individuos me quedo solo con los de mejor fitness
+                nuevosIndividuos = nuevosIndividuos.subList(0, Parametros.TOTAL_POBLACION);
+            }else if (nuevosIndividuos.size() < Parametros.TOTAL_POBLACION){
+                //Si hay menos individuos completo con los padres de mejor fitness
+                for (int indicePadres = 0; indicePadres < Parametros.TOTAL_POBLACION - nuevosIndividuos.size(); indicePadres++){
+                    nuevosIndividuos.add(ultimaPoblacion.getPoblacion().get(indicePadres).clone());
+                }
+            }
+
+            mejorFitness = 0;
+            fitnessPromedio = 0;
+            //Mutacion
+            for (Individuo hijo : nuevosIndividuos){
+                if (Math.random() < Parametros.PROBABILIDAD_MUTACION){
+                    algoritmoEvolutivo.mutacion(hijo);
+                }
+                if (mejorFitness < hijo.getFitness()){
+                    mejorFitness = hijo.getFitness();
+                }
+                fitnessPromedio += hijo.getFitness();
+            }
+            
+            if ((nuevosIndividuos != null) && (!nuevosIndividuos.isEmpty())){
+                fitnessPromedio = fitnessPromedio / nuevosIndividuos.size();
+            }
+
+            if ((mejorFitness - mejorFitnessActual) * 100 / fitenssOptimo > 10){
+                mejorFitnessActual = mejorFitness;
+                log.agregarEvento(new Evento(new Date(), "Mejora 10% de fitness " + mejorFitness + ", generación " + generacion));
+            }
+        
+            Poblacion nuevaPoblacion = new Poblacion(nuevosIndividuos);
+            nuevaPoblacion.setFitnessPromedio(fitnessPromedio);
+            nuevaPoblacion.setMejorFitness(mejorFitness);
+            nuevaPoblacion.setGeneracion(generacion);
+            
+            poblaciones.add(nuevaPoblacion);
+            
+            generacion++;
+        }
+        
+        log.agregarEvento(new Evento(new Date(), "Fin Algoritmo Evolutivo"));
+
+        String path = System.getProperty("user.dir");
+        DateFormat format = new SimpleDateFormat("YYYYMMdHm");
+        path += "/logAE" + format.format(new Date()) + ".txt";
+
+        log.imprimirEventos(path);
+    }
+
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;

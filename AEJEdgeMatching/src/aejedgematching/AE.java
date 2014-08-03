@@ -8,6 +8,9 @@ package aejedgematching;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -15,18 +18,113 @@ import java.util.HashMap;
  */
 public class AE {
     
+    private boolean testCruzamiento;
+    private int corteEsquina;
+    private int corteBorde;
+    private int inicioCorteFila;
+    private int inicioCorteColumna;
+    private int largoCorteFila;
+    private int largoCorteColumna;
+
+    private boolean testMutacion;
+    private int probabilidadZona;
+    private int fichaMutacion1;
+    private int fichaMutacion2;
+
+    public AE(){
+        testCruzamiento = false;
+        testMutacion = false;
+    }
+
+    /**
+     * Setea las variables utilizadas para los algoritmos de cruzamiento y mutación
+     * @param corteEsquina es donde se corta las fichas de las esquinas para el cruzamiento, debe ser >= 0 y < 4
+     * @param corteBorde es donde se corta las fichas de los bordes para el cruzamiento, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2) * 4
+     * @param inicioCorteFila fila inicial del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2)
+     * @param inicioCorteColumna columna inicial del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2)
+     * @param largoCorteFila largo de fila del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2 - inicioCorteFila)
+     * @param largoCorteColumna largo de columna del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2 - inicioCorteColumna)
+     * @param probabilidadZona indica que zona debe ser mutada,
+     *        [0,3] se mutan las esquinas
+     *        [4,(Parametros.DIMENSION_TABLERO - 1) * 4) se mutan los bordes
+     *        >= (Parametros.DIMENSION_TABLERO - 1) * 4 se muta el interior
+     * @param fichaMutacion1 indica la primera ficha a mutar, si la zona a mutar es:
+     *        las esquinas [0,3]
+     *        los bordes [0,(Parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
+     *        el interior [0,(Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1)]
+     * @param fichaMutacion2 indica la segunda ficha a mutar, si la zona a mutar es:
+     *        las esquinas [0,3]
+     *        los bordes [0,(Parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
+     *        el interior [0,(Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1)]
+     */
+    public void setAmbienteTest(int corteEsquina, int corteBorde, 
+            int inicioCorteFila, int inicioCorteColumna, int largoCorteFila, 
+            int largoCorteColumna, int probabilidadZona, int fichaMutacion1,
+            int fichaMutacion2){
+        setAmbienteTestCruzamiento(corteEsquina, corteBorde, inicioCorteFila, inicioCorteColumna, largoCorteFila, largoCorteColumna);
+        setAmbienteTestMutacion(probabilidadZona, fichaMutacion1, fichaMutacion2);
+    }
     
+    /**
+     * Setea todas las variables utilizadas en el algoritmo de cruzamiento
+     * @param corteEsquina es donde se corta las fichas de las esquinas para el cruzamiento, debe ser >= 0 y < 4
+     * @param corteBorde es donde se corta las fichas de los bordes para el cruzamiento, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2) * 4
+     * @param inicioCorteFila fila inicial del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2)
+     * @param inicioCorteColumna columna inicial del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2)
+     * @param largoCorteFila largo de fila del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2 - inicioCorteFila)
+     * @param largoCorteColumna largo de columna del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2 - inicioCorteColumna)
+     */
+    public void setAmbienteTestCruzamiento(int corteEsquina, int corteBorde, 
+            int inicioCorteFila, int inicioCorteColumna, int largoCorteFila, 
+            int largoCorteColumna) {
+        this.testCruzamiento = true;
+        this.corteEsquina = corteEsquina;
+        this.corteBorde = corteBorde;
+        this.inicioCorteFila = inicioCorteFila;
+        this.inicioCorteColumna = inicioCorteColumna;
+        this.largoCorteFila = largoCorteFila;
+        this.largoCorteColumna = largoCorteColumna;
+    }
+
+    /**
+     * Setea todas las variables utilizadas en el algoritmo de mutación, fichaMutacion1 debe ser distinta a fichaMutacion2
+     * @param probabilidadZona indica que zona debe ser mutada,
+     *        [0,3] se mutan las esquinas
+     *        [4,(Parametros.DIMENSION_TABLERO - 1) * 4) se mutan los bordes
+     *        >= (Parametros.DIMENSION_TABLERO - 1) * 4 se muta el interior
+     * @param fichaMutacion1 indica la primera ficha a mutar, si la zona a mutar es:
+     *        las esquinas [0,3]
+     *        los bordes [0,(Parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
+     *        el interior [0,(Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1)]
+     * @param fichaMutacion2 indica la segunda ficha a mutar, si la zona a mutar es:
+     *        las esquinas [0,3]
+     *        los bordes [0,(Parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
+     *        el interior [0,(Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1)]
+     */
+    public void setAmbienteTestMutacion(int probabilidadZona, int fichaMutacion1,
+            int fichaMutacion2) {
+        this.testMutacion = true;
+        this.probabilidadZona = probabilidadZona;
+        this.fichaMutacion1 = fichaMutacion1;
+        this.fichaMutacion2 = fichaMutacion2;
+    }
+    
+    /**
+     * Realiza el cruzamiento entre los padres pasados por parámetros
+     * @param padre1 primer padre para el cruzamiento
+     * @param padre2 segundo padre para el cruzamiento
+     * @return Devuelve todos los hijos generados del cruzamiento entre padre1 y padre2 que superen el fitness de ambos padres
+     */
     public ArrayList<Individuo> cruzamiento(Individuo padre1, Individuo padre2){
-        ArrayList<Individuo> hijos = new ArrayList<>();
         
-        int corteEsquina = (int)(Math.random() * 3);
-        corteEsquina = 1;
-        int corteBorde = (int)(Math.random() * ((Parametros.DIMENSION_TABLERO - 2) * 4 - 1));
-        corteBorde = 2;
-        int fila = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2));
-        int columna = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2));
-        int largoFila = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2 - fila));
-        int largoColumna = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2 - columna));
+        if (!testCruzamiento){
+            corteEsquina = (int)(Math.random() * 3);
+            corteBorde = (int)(Math.random() * ((Parametros.DIMENSION_TABLERO - 2) * 4 - 1));
+            inicioCorteFila = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2));
+            inicioCorteColumna = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2));
+            largoCorteFila = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2 - inicioCorteFila));
+            largoCorteColumna = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2 - inicioCorteColumna));
+        }
         
         ArrayList<Ficha[]> nuevasEsquinas = corteSPX(4, corteEsquina, padre1.getEsquinas(), padre2.getEsquinas());
         ajustarEsquinas(nuevasEsquinas.get(0), nuevasEsquinas.get(1));
@@ -34,14 +132,9 @@ public class AE {
         ArrayList<Ficha[]> nuevosBordes = corteSPX((Parametros.DIMENSION_TABLERO - 2) * 4, corteBorde, padre1.getBordes(), padre2.getBordes());
         ajustarBordes(nuevosBordes.get(0), nuevosBordes.get(1));
         
-        System.out.println("corte esquina: " + corteEsquina);
-        System.out.println("corte borde: " + corteBorde);
-        System.out.println("corte fila: " + fila);
-        System.out.println("corte columna: " + columna);
-        System.out.println("corte largo fila: " + largoFila);
-        System.out.println("corte largo columna: " + largoColumna);
+        ArrayList<Ficha[][]> interiores = corteRegion(inicioCorteFila, inicioCorteColumna, largoCorteFila, largoCorteColumna, padre1.getInterior(), padre2.getInterior());
         
-        return hijos;
+        return crearHijos(padre1, padre2, nuevasEsquinas, nuevosBordes, interiores);
     }
     
     /**
@@ -210,6 +303,12 @@ public class AE {
         int filaRot3 = filaCorte + largoCorteFila;
         int columnaRot3 = columnaCorte;
         
+        HashMap<Integer, Integer> mapCambioPadre1 = new HashMap<>();
+        HashMap<Integer, Coordenadas> mapCoordenadasPadre1 = new HashMap<>();
+        
+        HashMap<Integer, Integer> mapCambioPadre2 = new HashMap<>();
+        HashMap<Integer, Coordenadas> mapCoordenadasPadre2 = new HashMap<>();
+        
         for (int fila = 0; fila < Parametros.DIMENSION_TABLERO - 2; fila++){
             for (int columna = 0; columna < Parametros.DIMENSION_TABLERO - 2; columna++){
                 //Estoy fuera de la región que quiero intercambiar, copio la misma información del padre
@@ -218,9 +317,11 @@ public class AE {
                     
                     hijo1Padre1[fila][columna] = interiorPadre1[fila][columna].clone();
                     hijo2Padre1[fila][columna] = interiorPadre1[fila][columna].clone();
+                    mapCoordenadasPadre1.put(interiorPadre1[fila][columna].getNroFicha(), new Coordenadas(fila, columna));
 
                     hijo1Padre2[fila][columna] = interiorPadre2[fila][columna].clone();
                     hijo2Padre2[fila][columna] = interiorPadre2[fila][columna].clone();
+                    mapCoordenadasPadre2.put(interiorPadre2[fila][columna].getNroFicha(), new Coordenadas(fila, columna));
 
                     if (largoCorteFila == largoCorteColumna){
                         //Si la región es cuadrada se agregan 2 hijos más para el padre 1
@@ -236,6 +337,25 @@ public class AE {
                     
                     hijo1Padre1[fila][columna] = interiorPadre2[fila][columna].clone();
                     hijo1Padre2[fila][columna] = interiorPadre1[fila][columna].clone();
+                    
+                    if (interiorPadre1[fila][columna].getNroFicha() != interiorPadre2[fila][columna].getNroFicha()){
+                        
+                        int nroFicha1 = interiorPadre1[fila][columna].getNroFicha();
+                        int nroFicha2 = interiorPadre2[fila][columna].getNroFicha();
+                        
+                        if (mapCambioPadre2.containsKey(nroFicha1)){
+                            nroFicha1 = mapCambioPadre2.remove(nroFicha1);
+                            mapCambioPadre1.remove(nroFicha1);
+                        }
+                        
+                        if (mapCambioPadre1.containsKey(nroFicha2)){
+                            nroFicha2 = mapCambioPadre1.remove(nroFicha2);
+                            mapCambioPadre2.remove(nroFicha2);
+                        }
+                        
+                        mapCambioPadre1.put(nroFicha1, nroFicha2);
+                        mapCambioPadre2.put(nroFicha2, nroFicha1);
+                    }
                     
                     hijo2Padre1[filaRot2][columnaRot2] = interiorPadre2[fila][columna].clone();
                     hijo2Padre1[filaRot2][columnaRot2].rotarFicha(2);
@@ -290,7 +410,186 @@ public class AE {
             interiores.add(hijo4Padre2);
         }
         
+        for (Map.Entry<Integer, Integer> entrySet : mapCambioPadre1.entrySet()){
+            hijo1Padre1[mapCoordenadasPadre1.get(entrySet.getValue()).getFila()][mapCoordenadasPadre1.get(entrySet.getValue()).getColumna()] =
+                interiorPadre2[mapCoordenadasPadre2.get(entrySet.getKey()).getFila()][mapCoordenadasPadre2.get(entrySet.getKey()).getColumna()].clone();
+            hijo2Padre1[mapCoordenadasPadre1.get(entrySet.getValue()).getFila()][mapCoordenadasPadre1.get(entrySet.getValue()).getColumna()] =
+                interiorPadre2[mapCoordenadasPadre2.get(entrySet.getKey()).getFila()][mapCoordenadasPadre2.get(entrySet.getKey()).getColumna()].clone();
+
+            hijo1Padre2[mapCoordenadasPadre2.get(entrySet.getKey()).getFila()][mapCoordenadasPadre2.get(entrySet.getKey()).getColumna()] =
+                interiorPadre1[mapCoordenadasPadre1.get(entrySet.getValue()).getFila()][mapCoordenadasPadre1.get(entrySet.getValue()).getColumna()].clone();
+            hijo2Padre2[mapCoordenadasPadre2.get(entrySet.getKey()).getFila()][mapCoordenadasPadre2.get(entrySet.getKey()).getColumna()] =
+                interiorPadre1[mapCoordenadasPadre1.get(entrySet.getValue()).getFila()][mapCoordenadasPadre1.get(entrySet.getValue()).getColumna()].clone();
+
+            if (largoCorteFila == largoCorteColumna){
+                hijo3Padre1[mapCoordenadasPadre1.get(entrySet.getValue()).getFila()][mapCoordenadasPadre1.get(entrySet.getValue()).getColumna()] =
+                    interiorPadre2[mapCoordenadasPadre2.get(entrySet.getKey()).getFila()][mapCoordenadasPadre2.get(entrySet.getKey()).getColumna()].clone();
+                hijo4Padre1[mapCoordenadasPadre1.get(entrySet.getValue()).getFila()][mapCoordenadasPadre1.get(entrySet.getValue()).getColumna()] =
+                    interiorPadre2[mapCoordenadasPadre2.get(entrySet.getKey()).getFila()][mapCoordenadasPadre2.get(entrySet.getKey()).getColumna()].clone();
+
+                hijo3Padre2[mapCoordenadasPadre2.get(entrySet.getKey()).getFila()][mapCoordenadasPadre2.get(entrySet.getKey()).getColumna()] =
+                    interiorPadre1[mapCoordenadasPadre1.get(entrySet.getValue()).getFila()][mapCoordenadasPadre1.get(entrySet.getValue()).getColumna()].clone();
+                hijo4Padre2[mapCoordenadasPadre2.get(entrySet.getKey()).getFila()][mapCoordenadasPadre2.get(entrySet.getKey()).getColumna()] =
+                    interiorPadre1[mapCoordenadasPadre1.get(entrySet.getValue()).getFila()][mapCoordenadasPadre1.get(entrySet.getValue()).getColumna()].clone();
+            }
+            
+        }
+        
         return interiores;
     }
 
+    private ArrayList<Individuo> crearHijos(Individuo padre1, Individuo padre2, ArrayList<Ficha[]> nuevasEsquinas, ArrayList<Ficha[]> nuevosBordes,
+            ArrayList<Ficha[][]> interiores){
+        
+        ArrayList<Individuo> hijos = new ArrayList<>();
+
+        //Agrego los hijos solo aplicando corte a las esquinas
+        Individuo hijo = new Individuo(nuevasEsquinas.get(0), padre1.getBordes(), padre1.getInterior());
+        if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+            hijos.add(hijo);
+        }
+        hijo = new Individuo(nuevasEsquinas.get(1), padre2.getBordes(), padre2.getInterior());
+        if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+            hijos.add(hijo);
+        }
+
+        //Agrego los hijos solo aplicando corte a los bordes
+        hijo = new Individuo(padre1.getBordes(), nuevosBordes.get(0), padre1.getInterior());
+        if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+            hijos.add(hijo);
+        }
+        hijo = new Individuo(padre2.getBordes(), nuevosBordes.get(1), padre2.getInterior());
+        if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+            hijos.add(hijo);
+        }
+        
+        //Agrego los hijos aplicando cortes a esquinas y bordes
+        hijo = new Individuo(nuevasEsquinas.get(0), nuevosBordes.get(0), padre1.getInterior());
+        if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+            hijos.add(hijo);
+        }
+        hijo = new Individuo(nuevasEsquinas.get(1), nuevosBordes.get(1), padre2.getInterior());
+        if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+            hijos.add(hijo);
+        }
+
+        for (int i = 0; i < interiores.size() / 2; i++){
+            
+            //Agrego los hijos solo aplicando corte al interior
+            hijo = new Individuo(padre1.getBordes(), padre1.getBordes(), interiores.get(i));
+            if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+                hijos.add(hijo);
+            }
+            
+            hijo = new Individuo(padre2.getBordes(), padre2.getBordes(), interiores.get(i + interiores.size() / 2));
+            if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+                hijos.add(hijo);
+            }
+
+            //Agrego los hijos aplicando corte al interior y esquinas
+            hijo = new Individuo(nuevasEsquinas.get(0), padre1.getBordes(), interiores.get(i));
+            if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+                hijos.add(hijo);
+            }
+            
+            hijo = new Individuo(nuevasEsquinas.get(1), padre2.getBordes(), interiores.get(i + interiores.size() / 2));
+            if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+                hijos.add(hijo);
+            }
+            
+            //Agrego los hijos aplicando corte al interior y bordes
+            hijo = new Individuo(padre1.getBordes(), nuevosBordes.get(0), interiores.get(i));
+            if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+                hijos.add(hijo);
+            }
+            
+            hijo = new Individuo(padre2.getBordes(), nuevosBordes.get(1), interiores.get(i + interiores.size() / 2));
+            if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+                hijos.add(hijo);
+            }
+            
+            //Agrego los hijos aplicando corte al interior, bordes y esquinas
+            hijo = new Individuo(nuevasEsquinas.get(0), nuevosBordes.get(0), interiores.get(i));
+            if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+                hijos.add(hijo);
+            }
+            
+            hijo = new Individuo(nuevasEsquinas.get(1), nuevosBordes.get(1), interiores.get(i + interiores.size() / 2));
+            if ((hijo.getFitness() > padre1.getFitness()) && (hijo.getFitness() > padre2.getFitness())){
+                hijos.add(hijo);
+            }
+        }
+        
+        return hijos;
+    }
+
+    /**
+     * Realiza la mutación de un individuo
+     * @param individuo es el individuo a ser mutado
+     */
+    public void mutacion(Individuo individuo){
+        
+        if (!testMutacion){
+            probabilidadZona = (int)(Math.random() * (Parametros.DIMENSION_TABLERO * Parametros.DIMENSION_TABLERO));
+        }
+        
+        if (probabilidadZona < 4){
+            //Selecciono una esquina
+            if (!testMutacion){
+                fichaMutacion1 = (int)(Math.random() * 4);
+                fichaMutacion2 = (int)(Math.random() * 3);
+
+                if (fichaMutacion2 >= fichaMutacion1){
+                    fichaMutacion2++;
+                }
+            }
+            
+            Ficha fichaCambio = individuo.getEsquinas()[fichaMutacion1];
+            individuo.getEsquinas()[fichaMutacion1] = individuo.getEsquinas()[fichaMutacion2];
+            individuo.getEsquinas()[fichaMutacion2] = fichaCambio;
+            
+        }else if (probabilidadZona < (Parametros.DIMENSION_TABLERO - 1) * 4){
+            //Selecciono un borde
+            if (!testMutacion){
+                fichaMutacion1 = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2) * 4);
+                fichaMutacion2 = (int)(Math.random() * ((Parametros.DIMENSION_TABLERO - 2) * 4 - 1));
+
+                if (fichaMutacion2 >= fichaMutacion1){
+                    fichaMutacion2++;
+                }
+            }
+            
+            Ficha fichaCambio = individuo.getBordes()[fichaMutacion1];
+            individuo.getBordes()[fichaMutacion1] = individuo.getBordes()[fichaMutacion2];
+            individuo.getBordes()[fichaMutacion2] = fichaCambio;
+            
+        }else{
+            //Selecciono el interior
+            if (!testMutacion){
+                fichaMutacion1 = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2));
+                fichaMutacion2 = (int)(Math.random() * ((Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1));
+
+                if (fichaMutacion2 >= fichaMutacion1){
+                    fichaMutacion2++;
+                }
+            }
+            
+            Coordenadas coordFicha1 = obtenerCoordenadaFicha(fichaMutacion1);
+            Coordenadas coordFicha2 = obtenerCoordenadaFicha(fichaMutacion2);
+            
+            Ficha fichaCambio = individuo.getInterior()[coordFicha1.getFila()][coordFicha1.getColumna()];
+            individuo.getInterior()[coordFicha1.getFila()][coordFicha1.getColumna()] = individuo.getInterior()[coordFicha2.getFila()][coordFicha2.getColumna()];
+            individuo.getInterior()[coordFicha2.getFila()][coordFicha2.getColumna()] = fichaCambio;
+            
+        }
+
+    }
+    
+    private Coordenadas obtenerCoordenadaFicha(int ficha){
+        int fila, columna;
+        fila = ficha / (Parametros.DIMENSION_TABLERO - 2);
+        columna = ficha % (Parametros.DIMENSION_TABLERO - 2);
+        return new Coordenadas(fila, columna);
+    }
+    
 }

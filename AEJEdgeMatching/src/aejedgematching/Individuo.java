@@ -6,6 +6,8 @@
 
 package aejedgematching;
 
+import java.util.Comparator;
+
 /**
  *
  * @author Usuario
@@ -97,6 +99,26 @@ public class Individuo {
             }
         }
         return fitness;
+    }
+
+    public int compareTo(Individuo individuo){
+        return individuo.getFitness() - this.getFitness();
+    }
+    
+    public static Comparator<Individuo> getComparator() {
+        return new Comparator<Individuo>() {
+            @Override
+            public int compare(Individuo individuo1, Individuo individuo2) {
+                return (individuo2.getFitness() - individuo1.getFitness());
+            }
+        };
+    }
+
+    @Override
+    public Individuo clone(){
+        Individuo ret = new Individuo(esquinas.clone(), bordes.clone(), interior.clone());
+        ret.fitness = getFitness();
+        return ret;
     }
 
 }
