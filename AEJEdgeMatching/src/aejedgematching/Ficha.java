@@ -22,6 +22,8 @@ public class Ficha {
     private boolean utilizada;
     private boolean cambioPosicion;
 
+    
+    
     public Ficha(int nroFicha, int[] colores) {
         this.nroFicha = nroFicha;
         this.rotacion = 0;
