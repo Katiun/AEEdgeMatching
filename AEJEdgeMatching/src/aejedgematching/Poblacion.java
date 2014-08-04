@@ -6,6 +6,7 @@
 
 package aejedgematching;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,5 +56,18 @@ public class Poblacion {
         this.generacion = generacion;
     }
     
+    public int getTamanioPoblacion()
+    {
+        return poblacion.size();
+    }
     
+    public boolean contieneSoloUno (Individuo ind){
+        ArrayList<Individuo> aux =  (ArrayList<Individuo>) ((ArrayList<Individuo>) poblacion).clone();
+        aux.remove(ind);
+        return (poblacion.contains(ind) && !aux.contains(ind));
+    }
+    
+    public Individuo GetIndividuoPoblacion(int index){
+        return poblacion.get(index);
+    }
 }
