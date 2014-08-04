@@ -21,10 +21,17 @@ public class AD {
     private int mejorFitness;
     private int fitnessOptimo;
     private LogEventos log;
+    private String nombreArchivo;
     
     public AD(Individuo individuo){
         individuoOriginal = individuo;
         tablero = new Ficha[Parametros.DIMENSION_TABLERO][Parametros.DIMENSION_TABLERO];
+    }
+    
+    public AD(Individuo individuo, String nombreArchivo){
+        individuoOriginal = individuo;
+        tablero = new Ficha[Parametros.DIMENSION_TABLERO][Parametros.DIMENSION_TABLERO];
+        this.nombreArchivo = nombreArchivo;
     }
     
     /**
@@ -62,11 +69,11 @@ public class AD {
             fila++;
         }
         
-        try{
-            int sleep = (int)(Math.random() * 2);
-            log.agregarEvento(new Evento(new Date(), "Duerme " + sleep));
-            Thread.sleep(sleep); 
-        }catch(InterruptedException e){}
+//        try{
+//            int sleep = (int)(Math.random() * 2);
+//            log.agregarEvento(new Evento(new Date(), "Duerme " + sleep));
+//            Thread.sleep(sleep); 
+//        }catch(InterruptedException e){}
         
         //Cuando mejora el fitness en 10% agrego como evento
         if ((fitnessActual - mejorFitness) * 100 / fitnessOptimo > 10){
@@ -78,7 +85,7 @@ public class AD {
         if ((fila >= Parametros.DIMENSION_TABLERO) || (finEjecucion.before(new Date()))){
             endBacktracking = true;
             log.agregarEvento(new Evento(new Date(), "Finaliza algoritmo determinista, mejor fitness " + mejorFitness));
-            imprimirTablero();
+            imprimirLog(nombreArchivo);
             return;
         }
         

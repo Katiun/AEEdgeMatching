@@ -24,5 +24,6 @@ public class Parametros {
     public static double PROBABILIDAD_MUTACION = 0.1;
     public static int CANT_GENERACIONES = 1000;
     public static int TOTAL_POBLACION = 50;
+    public static long TIEMPO_EJECUCION_AD = 1000;
 
 }

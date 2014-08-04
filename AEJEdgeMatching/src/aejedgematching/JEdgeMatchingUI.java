@@ -54,6 +54,7 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
     private final String ACTION_COMMAND_GUARDAR = "ACTION_COMMAND_GUARDAR";
     private final String ACTION_COMMAND_CARGAR = "ACTION_COMMAND_CARGAR";
     private final String ACTION_COMMAND_ALGORITMO_EVOLUTIVO = "ACTION_COMMAND_ALGORITMO_EVOLUTIVO";
+    private final String ACTION_COMMAND_ALGORITMO_DETERMINISTA = "ACTION_COMMAND_ALGORITMO_DETERMINISTA";
 
     JLabel lblDim;
     JTextField txtDim;
@@ -194,6 +195,14 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                                 }
                                 ejecutarAlgoritmoEvolutivo();
                                 break;
+                                
+                            case ACTION_COMMAND_ALGORITMO_DETERMINISTA:
+                                if (!archivoCargado){
+                                    JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún archivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                                    return;
+                                }
+                                ejecutarAlgoritmoDeterminista();
+                                break;
                         }
                         if (cargarTablero){
                             pnlPuzzle.setTablero(tablero);
@@ -267,6 +276,14 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
                 itAlgoritmoEvolutivo.addActionListener(actionListener);
                 itAlgoritmoEvolutivo.setActionCommand(ACTION_COMMAND_ALGORITMO_EVOLUTIVO);
                 menuAlgoritmo.add(itAlgoritmoEvolutivo);
+                
+                JSeparator sep3 = new JSeparator();
+                menuAlgoritmo.add(sep3);
+                
+                JMenuItem itAlgoritmoDeterminista = new JMenuItem("Algoritmo Determinista");
+                itAlgoritmoEvolutivo.addActionListener(actionListener);
+                itAlgoritmoEvolutivo.setActionCommand(ACTION_COMMAND_ALGORITMO_DETERMINISTA);
+                menuAlgoritmo.add(itAlgoritmoDeterminista);
                 
                 c.fill = GridBagConstraints.HORIZONTAL;
                 c.gridy = 0;
@@ -848,13 +865,29 @@ public class JEdgeMatchingUI extends javax.swing.JFrame {
         
         log.agregarEvento(new Evento(new Date(), "Fin Algoritmo Evolutivo"));
 
-        String path = System.getProperty("user.dir");
-        DateFormat format = new SimpleDateFormat("YYYYMMdHm");
-        path += "/logAE" + format.format(new Date()) + ".txt";
+        String path = obtenerNombreArchivo("logAE");
 
         log.imprimirEventos(path);
     }
 
+    private void ejecutarAlgoritmoDeterminista(){
+
+        String path = obtenerNombreArchivo("logAD");
+
+        AD algoritmoDeterminista = new AD(individuoOriginal, path);
+        algoritmoDeterminista.ejecutar(Parametros.TIEMPO_EJECUCION_AD);
+        
+    }
+    
+    private String obtenerNombreArchivo(String nombre){
+        
+        String path = System.getProperty("user.dir");
+        DateFormat format = new SimpleDateFormat("YYYYMMdHm");
+        path += "/" + nombre + format.format(new Date()) + ".txt";
+        
+        return path;
+
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
