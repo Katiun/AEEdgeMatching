@@ -30,32 +30,38 @@ public class AE {
     private int probabilidadZona;
     private int fichaMutacion1;
     private int fichaMutacion2;
+    
+    private Parametros parametros;
 
     public AE(){
         testCruzamiento = false;
         testMutacion = false;
     }
+    
+    public AE(Parametros params){        
+        this.parametros = params;
+    }
 
     /**
      * Setea las variables utilizadas para los algoritmos de cruzamiento y mutación
      * @param corteEsquina es donde se corta las fichas de las esquinas para el cruzamiento, debe ser >= 0 y < 4
-     * @param corteBorde es donde se corta las fichas de los bordes para el cruzamiento, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2) * 4
-     * @param inicioCorteFila fila inicial del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2)
-     * @param inicioCorteColumna columna inicial del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2)
-     * @param largoCorteFila largo de fila del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2 - inicioCorteFila)
-     * @param largoCorteColumna largo de columna del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2 - inicioCorteColumna)
+     * @param corteBorde es donde se corta las fichas de los bordes para el cruzamiento, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2) * 4
+     * @param inicioCorteFila fila inicial del corte de la región interna, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2)
+     * @param inicioCorteColumna columna inicial del corte de la región interna, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2)
+     * @param largoCorteFila largo de fila del corte de la región interna, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2 - inicioCorteFila)
+     * @param largoCorteColumna largo de columna del corte de la región interna, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2 - inicioCorteColumna)
      * @param probabilidadZona indica que zona debe ser mutada,
-     *        [0,3] se mutan las esquinas
-     *        [4,(Parametros.DIMENSION_TABLERO - 1) * 4) se mutan los bordes
-     *        >= (Parametros.DIMENSION_TABLERO - 1) * 4 se muta el interior
+        [0,3] se mutan las esquinas
+        [4,(parametros.DIMENSION_TABLERO - 1) * 4) se mutan los bordes
+        >= (parametros.DIMENSION_TABLERO - 1) * 4 se muta el interior
      * @param fichaMutacion1 indica la primera ficha a mutar, si la zona a mutar es:
-     *        las esquinas [0,3]
-     *        los bordes [0,(Parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
-     *        el interior [0,(Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1)]
+        las esquinas [0,3]
+        los bordes [0,(parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
+        el interior [0,(parametros.DIMENSION_TABLERO - 2) * (parametros.DIMENSION_TABLERO - 2) - 1)]
      * @param fichaMutacion2 indica la segunda ficha a mutar, si la zona a mutar es:
-     *        las esquinas [0,3]
-     *        los bordes [0,(Parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
-     *        el interior [0,(Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1)]
+        las esquinas [0,3]
+        los bordes [0,(parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
+        el interior [0,(parametros.DIMENSION_TABLERO - 2) * (parametros.DIMENSION_TABLERO - 2) - 1)]
      */
     public void setAmbienteTest(int corteEsquina, int corteBorde, 
             int inicioCorteFila, int inicioCorteColumna, int largoCorteFila, 
@@ -65,14 +71,18 @@ public class AE {
         setAmbienteTestMutacion(probabilidadZona, fichaMutacion1, fichaMutacion2);
     }
     
+    public void setAmbienteTestParametros (Parametros params){
+        this.parametros = params;
+    }
+    
     /**
      * Setea todas las variables utilizadas en el algoritmo de cruzamiento
      * @param corteEsquina es donde se corta las fichas de las esquinas para el cruzamiento, debe ser >= 0 y < 4
-     * @param corteBorde es donde se corta las fichas de los bordes para el cruzamiento, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2) * 4
-     * @param inicioCorteFila fila inicial del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2)
-     * @param inicioCorteColumna columna inicial del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2)
-     * @param largoCorteFila largo de fila del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2 - inicioCorteFila)
-     * @param largoCorteColumna largo de columna del corte de la región interna, debe ser >= 0 y < (Parametros.DIMENSION_TABLERO - 2 - inicioCorteColumna)
+     * @param corteBorde es donde se corta las fichas de los bordes para el cruzamiento, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2) * 4
+     * @param inicioCorteFila fila inicial del corte de la región interna, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2)
+     * @param inicioCorteColumna columna inicial del corte de la región interna, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2)
+     * @param largoCorteFila largo de fila del corte de la región interna, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2 - inicioCorteFila)
+     * @param largoCorteColumna largo de columna del corte de la región interna, debe ser >= 0 y < (parametros.DIMENSION_TABLERO - 2 - inicioCorteColumna)
      */
     public void setAmbienteTestCruzamiento(int corteEsquina, int corteBorde, 
             int inicioCorteFila, int inicioCorteColumna, int largoCorteFila, 
@@ -89,17 +99,17 @@ public class AE {
     /**
      * Setea todas las variables utilizadas en el algoritmo de mutación, fichaMutacion1 debe ser distinta a fichaMutacion2
      * @param probabilidadZona indica que zona debe ser mutada,
-     *        [0,3] se mutan las esquinas
-     *        [4,(Parametros.DIMENSION_TABLERO - 1) * 4) se mutan los bordes
-     *        >= (Parametros.DIMENSION_TABLERO - 1) * 4 se muta el interior
+        [0,3] se mutan las esquinas
+        [4,(parametros.DIMENSION_TABLERO - 1) * 4) se mutan los bordes
+        >= (parametros.DIMENSION_TABLERO - 1) * 4 se muta el interior
      * @param fichaMutacion1 indica la primera ficha a mutar, si la zona a mutar es:
-     *        las esquinas [0,3]
-     *        los bordes [0,(Parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
-     *        el interior [0,(Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1)]
+        las esquinas [0,3]
+        los bordes [0,(parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
+        el interior [0,(parametros.DIMENSION_TABLERO - 2) * (parametros.DIMENSION_TABLERO - 2) - 1)]
      * @param fichaMutacion2 indica la segunda ficha a mutar, si la zona a mutar es:
-     *        las esquinas [0,3]
-     *        los bordes [0,(Parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
-     *        el interior [0,(Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1)]
+        las esquinas [0,3]
+        los bordes [0,(parametros.DIMENSION_TABLERO - 2) * 4 - 1)]
+        el interior [0,(parametros.DIMENSION_TABLERO - 2) * (parametros.DIMENSION_TABLERO - 2) - 1)]
      */
     public void setAmbienteTestMutacion(int probabilidadZona, int fichaMutacion1,
             int fichaMutacion2) {
@@ -119,17 +129,17 @@ public class AE {
         
         if (!testCruzamiento){
             corteEsquina = (int)(Math.random() * 3);
-            corteBorde = (int)(Math.random() * ((Parametros.DIMENSION_TABLERO - 2) * 4 - 1));
-            inicioCorteFila = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2));
-            inicioCorteColumna = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2));
-            largoCorteFila = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2 - inicioCorteFila));
-            largoCorteColumna = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2 - inicioCorteColumna));
+            corteBorde = (int)(Math.random() * ((parametros.DIMENSION_TABLERO - 2) * 4 - 1));
+            inicioCorteFila = (int)(Math.random() * (parametros.DIMENSION_TABLERO - 2));
+            inicioCorteColumna = (int)(Math.random() * (parametros.DIMENSION_TABLERO - 2));
+            largoCorteFila = (int)(Math.random() * (parametros.DIMENSION_TABLERO - 2 - inicioCorteFila));
+            largoCorteColumna = (int)(Math.random() * (parametros.DIMENSION_TABLERO - 2 - inicioCorteColumna));
         }
         
         ArrayList<Ficha[]> nuevasEsquinas = corteSPX(4, corteEsquina, padre1.getEsquinas(), padre2.getEsquinas());
         ajustarEsquinas(nuevasEsquinas.get(0), nuevasEsquinas.get(1));
 
-        ArrayList<Ficha[]> nuevosBordes = corteSPX((Parametros.DIMENSION_TABLERO - 2) * 4, corteBorde, padre1.getBordes(), padre2.getBordes());
+        ArrayList<Ficha[]> nuevosBordes = corteSPX((parametros.DIMENSION_TABLERO - 2) * 4, corteBorde, padre1.getBordes(), padre2.getBordes());
         ajustarBordes(nuevosBordes.get(0), nuevosBordes.get(1));
         
         ArrayList<Ficha[][]> interiores = corteRegion(inicioCorteFila, inicioCorteColumna, largoCorteFila, largoCorteColumna, padre1.getInterior(), padre2.getInterior());
@@ -246,7 +256,7 @@ public class AE {
      */
     private void ajustarBordes(Ficha[] bordesHijo1, Ficha[] bordesHijo2){
         
-        for (int indice = 0; indice < Parametros.DIMENSION_TABLERO - 2; indice++){
+        for (int indice = 0; indice < parametros.DIMENSION_TABLERO - 2; indice++){
             while (bordesHijo1[indice].getColores()[0] != 0){
                 bordesHijo1[indice].rotarFicha(1);
             }
@@ -256,7 +266,7 @@ public class AE {
         }
         
         int patron = 3;
-        for (int indice = Parametros.DIMENSION_TABLERO - 2; indice < (Parametros.DIMENSION_TABLERO - 2) * 3; indice++){
+        for (int indice = parametros.DIMENSION_TABLERO - 2; indice < (parametros.DIMENSION_TABLERO - 2) * 3; indice++){
             while (bordesHijo1[indice].getColores()[patron] != 0){
                 bordesHijo1[indice].rotarFicha(1);
             }
@@ -270,7 +280,7 @@ public class AE {
             }
         }
         
-        for (int indice = (Parametros.DIMENSION_TABLERO - 2) * 3; indice < (Parametros.DIMENSION_TABLERO - 2) * 4; indice++){
+        for (int indice = (parametros.DIMENSION_TABLERO - 2) * 3; indice < (parametros.DIMENSION_TABLERO - 2) * 4; indice++){
             while (bordesHijo1[indice].getColores()[2] != 0){
                 bordesHijo1[indice].rotarFicha(1);
             }
@@ -287,14 +297,14 @@ public class AE {
         
         ArrayList<Ficha[][]> interiores = new ArrayList<>();
         
-        Ficha[][] hijo1Padre1 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        Ficha[][] hijo2Padre1 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        Ficha[][] hijo3Padre1 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        Ficha[][] hijo4Padre1 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        Ficha[][] hijo1Padre2 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        Ficha[][] hijo2Padre2 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        Ficha[][] hijo3Padre2 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
-        Ficha[][] hijo4Padre2 = new Ficha[Parametros.DIMENSION_TABLERO - 2][Parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo1Padre1 = new Ficha[parametros.DIMENSION_TABLERO - 2][parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo2Padre1 = new Ficha[parametros.DIMENSION_TABLERO - 2][parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo3Padre1 = new Ficha[parametros.DIMENSION_TABLERO - 2][parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo4Padre1 = new Ficha[parametros.DIMENSION_TABLERO - 2][parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo1Padre2 = new Ficha[parametros.DIMENSION_TABLERO - 2][parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo2Padre2 = new Ficha[parametros.DIMENSION_TABLERO - 2][parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo3Padre2 = new Ficha[parametros.DIMENSION_TABLERO - 2][parametros.DIMENSION_TABLERO - 2];
+        Ficha[][] hijo4Padre2 = new Ficha[parametros.DIMENSION_TABLERO - 2][parametros.DIMENSION_TABLERO - 2];
         
         int filaRot1 = filaCorte + largoCorteFila;
         int columnaRot1 = columnaCorte + largoCorteColumna;
@@ -309,8 +319,8 @@ public class AE {
         HashMap<Integer, Integer> mapCambioPadre2 = new HashMap<>();
         HashMap<Integer, Coordenadas> mapCoordenadasPadre2 = new HashMap<>();
         
-        for (int fila = 0; fila < Parametros.DIMENSION_TABLERO - 2; fila++){
-            for (int columna = 0; columna < Parametros.DIMENSION_TABLERO - 2; columna++){
+        for (int fila = 0; fila < parametros.DIMENSION_TABLERO - 2; fila++){
+            for (int columna = 0; columna < parametros.DIMENSION_TABLERO - 2; columna++){
                 //Estoy fuera de la región que quiero intercambiar, copio la misma información del padre
                 if ((fila < filaCorte) || (fila > filaCorte + largoCorteFila) ||
                         (columna < columnaCorte) || (columna > columnaCorte + largoCorteColumna)){
@@ -530,7 +540,7 @@ public class AE {
     public void mutacion(Individuo individuo){
         
         if (!testMutacion){
-            probabilidadZona = (int)(Math.random() * (Parametros.DIMENSION_TABLERO * Parametros.DIMENSION_TABLERO));
+            probabilidadZona = (int)(Math.random() * (parametros.DIMENSION_TABLERO * parametros.DIMENSION_TABLERO));
         }
         
         if (probabilidadZona < 4){
@@ -548,11 +558,11 @@ public class AE {
             individuo.getEsquinas()[fichaMutacion1] = individuo.getEsquinas()[fichaMutacion2];
             individuo.getEsquinas()[fichaMutacion2] = fichaCambio;
             
-        }else if (probabilidadZona < (Parametros.DIMENSION_TABLERO - 1) * 4){
+        }else if (probabilidadZona < (parametros.DIMENSION_TABLERO - 1) * 4){
             //Selecciono un borde
             if (!testMutacion){
-                fichaMutacion1 = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2) * 4);
-                fichaMutacion2 = (int)(Math.random() * ((Parametros.DIMENSION_TABLERO - 2) * 4 - 1));
+                fichaMutacion1 = (int)(Math.random() * (parametros.DIMENSION_TABLERO - 2) * 4);
+                fichaMutacion2 = (int)(Math.random() * ((parametros.DIMENSION_TABLERO - 2) * 4 - 1));
 
                 if (fichaMutacion2 >= fichaMutacion1){
                     fichaMutacion2++;
@@ -566,8 +576,8 @@ public class AE {
         }else{
             //Selecciono el interior
             if (!testMutacion){
-                fichaMutacion1 = (int)(Math.random() * (Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2));
-                fichaMutacion2 = (int)(Math.random() * ((Parametros.DIMENSION_TABLERO - 2) * (Parametros.DIMENSION_TABLERO - 2) - 1));
+                fichaMutacion1 = (int)(Math.random() * (parametros.DIMENSION_TABLERO - 2) * (parametros.DIMENSION_TABLERO - 2));
+                fichaMutacion2 = (int)(Math.random() * ((parametros.DIMENSION_TABLERO - 2) * (parametros.DIMENSION_TABLERO - 2) - 1));
 
                 if (fichaMutacion2 >= fichaMutacion1){
                     fichaMutacion2++;
@@ -587,8 +597,8 @@ public class AE {
     
     private Coordenadas obtenerCoordenadaFicha(int ficha){
         int fila, columna;
-        fila = ficha / (Parametros.DIMENSION_TABLERO - 2);
-        columna = ficha % (Parametros.DIMENSION_TABLERO - 2);
+        fila = ficha / (parametros.DIMENSION_TABLERO - 2);
+        columna = ficha % (parametros.DIMENSION_TABLERO - 2);
         return new Coordenadas(fila, columna);
     }
     
